@@ -1,0 +1,112 @@
+name: "Router on a Stick Inter-VLAN Routing"
+description: "802.1Q trunking between Router 2911 subinterfaces and Switch 2960 for multi-VLAN segmentation."
+
+devices:
+  - id: "R1"
+    type: "router_2911"
+    position:
+      x: 0.50
+      y: 0.20
+
+  - id: "SW1"
+    type: "switch_2960"
+    position:
+      x: 0.50
+      y: 0.50
+
+  - id: "PC1"
+    type: "pc"
+    position:
+      x: 0.25
+      y: 0.80
+
+  - id: "PC2"
+    type: "pc"
+    position:
+      x: 0.75
+      y: 0.80
+
+connections:
+  - from: "R1"
+    to: "SW1"
+    cable_type: "copper_straight_through"
+    from_port: "GigabitEthernet0/0"
+    to_port: "FastEthernet0/1"
+
+  - from: "SW1"
+    to: "PC1"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/2"
+    to_port: "FastEthernet0"
+
+  - from: "SW1"
+    to: "PC2"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/3"
+    to_port: "FastEthernet0"
+
+configurations:
+  R1:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname R1"
+      - "interface GigabitEthernet0/0"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/0.10"
+      - "encapsulation dot1Q 10"
+      - "ip address 192.168.10.1 255.255.255.0"
+      - "exit"
+      - "interface GigabitEthernet0/0.20"
+      - "encapsulation dot1Q 20"
+      - "ip address 192.168.20.1 255.255.255.0"
+      - "end"
+      - "write memory"
+
+  SW1:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname SW1"
+      - "vlan 10"
+      - "name SALES"
+      - "vlan 20"
+      - "name ENGINEERING"
+      - "exit"
+      - "interface FastEthernet0/1"
+      - "switchport mode trunk"
+      - "exit"
+      - "interface FastEthernet0/2"
+      - "switchport mode access"
+      - "switchport access vlan 10"
+      - "exit"
+      - "interface FastEthernet0/3"
+      - "switchport mode access"
+      - "switchport access vlan 20"
+      - "end"
+      - "write memory"
+
+  PC1:
+    type: "pc"
+    ip_address: "192.168.10.50"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+  PC2:
+    type: "pc"
+    ip_address: "192.168.20.50"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.20.1"
+
+verifications:
+  - source: "PC1"
+    target_ip: "192.168.10.1"
+    ping_count: 4
+
+  - source: "PC1"
+    target_ip: "192.168.20.50"
+    ping_count: 4

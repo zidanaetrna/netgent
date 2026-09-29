@@ -1,0 +1,485 @@
+name: "Topologi Partial Mesh 10 Router - Enterprise Backbone"
+description: "Arsitektur WAN Enterprise 10 Router berkonfigurasi Partial Mesh (14 point-to-point links) dengan routing dinamis OSPF Area 0, link redundancy multi-path, dan proteksi kegagalan link tanpa Single Point of Failure (SPOF)."
+
+devices:
+  # 10 Router Backbone (Cisco 2911)
+  - id: "R01"
+    type: "router_2911"
+    position:
+      x: 0.20
+      y: 0.20
+
+  - id: "R02"
+    type: "router_2911"
+    position:
+      x: 0.50
+      y: 0.15
+
+  - id: "R03"
+    type: "router_2911"
+    position:
+      x: 0.80
+      y: 0.20
+
+  - id: "R04"
+    type: "router_2911"
+    position:
+      x: 0.90
+      y: 0.45
+
+  - id: "R05"
+    type: "router_2911"
+    position:
+      x: 0.80
+      y: 0.70
+
+  - id: "R06"
+    type: "router_2911"
+    position:
+      x: 0.50
+      y: 0.75
+
+  - id: "R07"
+    type: "router_2911"
+    position:
+      x: 0.20
+      y: 0.70
+
+  - id: "R08"
+    type: "router_2911"
+    position:
+      x: 0.10
+      y: 0.45
+
+  - id: "R09"
+    type: "router_2911"
+    position:
+      x: 0.35
+      y: 0.45
+
+  - id: "R10"
+    type: "router_2911"
+    position:
+      x: 0.65
+      y: 0.45
+
+  # End Devices untuk Verifikasi Konektivitas Ujung-ke-Ujung
+  - id: "PC-HQ"
+    type: "pc"
+    position:
+      x: 0.08
+      y: 0.12
+
+  - id: "PC-CABANG"
+    type: "pc"
+    position:
+      x: 0.65
+      y: 0.30
+
+connections:
+  # Client connections
+  - from: "PC-HQ"
+    to: "R01"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "GigabitEthernet0/0"
+
+  - from: "PC-CABANG"
+    to: "R10"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "GigabitEthernet0/0"
+
+  # Outer Ring Connections (8 links)
+  # R01 <-> R02
+  - from: "R01"
+    to: "R02"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/1"
+    to_port: "GigabitEthernet0/0"
+
+  # R02 <-> R03
+  - from: "R02"
+    to: "R03"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/1"
+    to_port: "GigabitEthernet0/0"
+
+  # R03 <-> R04
+  - from: "R03"
+    to: "R04"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/1"
+    to_port: "GigabitEthernet0/0"
+
+  # R04 <-> R05
+  - from: "R04"
+    to: "R05"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/1"
+    to_port: "GigabitEthernet0/0"
+
+  # R05 <-> R06
+  - from: "R05"
+    to: "R06"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/1"
+    to_port: "GigabitEthernet0/0"
+
+  # R06 <-> R07
+  - from: "R06"
+    to: "R07"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/1"
+    to_port: "GigabitEthernet0/0"
+
+  # R07 <-> R08
+  - from: "R07"
+    to: "R08"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/1"
+    to_port: "GigabitEthernet0/0"
+
+  # R08 <-> R01
+  - from: "R08"
+    to: "R01"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/1"
+    to_port: "GigabitEthernet0/2"
+
+  # Inner Cross-Mesh Backbone (6 links)
+  # R09 connects to R02, R06, R08
+  - from: "R09"
+    to: "R02"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/0"
+    to_port: "GigabitEthernet0/2"
+
+  - from: "R09"
+    to: "R06"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/1"
+    to_port: "GigabitEthernet0/2"
+
+  - from: "R09"
+    to: "R08"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/2"
+    to_port: "GigabitEthernet0/2"
+
+  # R10 connects to R03, R05, R04
+  - from: "R10"
+    to: "R03"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/1"
+    to_port: "GigabitEthernet0/2"
+
+  - from: "R10"
+    to: "R05"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/2"
+    to_port: "GigabitEthernet0/2"
+
+  # Cross-Chord between R04 and R07
+  - from: "R04"
+    to: "R07"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/2"
+    to_port: "GigabitEthernet0/2"
+
+configurations:
+  # End Devices
+  PC-HQ:
+    type: "pc"
+    ip_address: "192.168.1.10"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.1.1"
+
+  PC-CABANG:
+    type: "pc"
+    ip_address: "192.168.10.10"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+  # Router 01
+  R01:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname R01"
+      - "interface GigabitEthernet0/0"
+      - "ip address 192.168.1.1 255.255.255.0"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.0.12.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.0.81.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 192.168.1.0 0.0.0.255 area 0"
+      - "network 10.0.12.0 0.0.0.3 area 0"
+      - "network 10.0.81.0 0.0.0.3 area 0"
+      - "end"
+      - "write memory"
+
+  # Router 02
+  R02:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname R02"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.0.12.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.0.23.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.0.92.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 10.0.12.0 0.0.0.3 area 0"
+      - "network 10.0.23.0 0.0.0.3 area 0"
+      - "network 10.0.92.0 0.0.0.3 area 0"
+      - "end"
+      - "write memory"
+
+  # Router 03
+  R03:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname R03"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.0.23.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.0.34.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.0.310.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 10.0.23.0 0.0.0.3 area 0"
+      - "network 10.0.34.0 0.0.0.3 area 0"
+      - "network 10.0.310.0 0.0.0.3 area 0"
+      - "end"
+      - "write memory"
+
+  # Router 04
+  R04:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname R04"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.0.34.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.0.45.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.0.47.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 10.0.34.0 0.0.0.3 area 0"
+      - "network 10.0.45.0 0.0.0.3 area 0"
+      - "network 10.0.47.0 0.0.0.3 area 0"
+      - "end"
+      - "write memory"
+
+  # Router 05
+  R05:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname R05"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.0.45.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.0.56.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.0.510.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 10.0.45.0 0.0.0.3 area 0"
+      - "network 10.0.56.0 0.0.0.3 area 0"
+      - "network 10.0.510.0 0.0.0.3 area 0"
+      - "end"
+      - "write memory"
+
+  # Router 06
+  R06:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname R06"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.0.56.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.0.67.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.0.96.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 10.0.56.0 0.0.0.3 area 0"
+      - "network 10.0.67.0 0.0.0.3 area 0"
+      - "network 10.0.96.0 0.0.0.3 area 0"
+      - "end"
+      - "write memory"
+
+  # Router 07
+  R07:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname R07"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.0.67.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.0.78.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.0.47.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 10.0.67.0 0.0.0.3 area 0"
+      - "network 10.0.78.0 0.0.0.3 area 0"
+      - "network 10.0.47.0 0.0.0.3 area 0"
+      - "end"
+      - "write memory"
+
+  # Router 08
+  R08:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname R08"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.0.78.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.0.81.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.0.98.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 10.0.78.0 0.0.0.3 area 0"
+      - "network 10.0.81.0 0.0.0.3 area 0"
+      - "network 10.0.98.0 0.0.0.3 area 0"
+      - "end"
+      - "write memory"
+
+  # Router 09
+  R09:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname R09"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.0.92.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.0.96.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.0.98.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 10.0.92.0 0.0.0.3 area 0"
+      - "network 10.0.96.0 0.0.0.3 area 0"
+      - "network 10.0.98.0 0.0.0.3 area 0"
+      - "end"
+      - "write memory"
+
+  # Router 10
+  R10:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname R10"
+      - "interface GigabitEthernet0/0"
+      - "ip address 192.168.10.1 255.255.255.0"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.0.310.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.0.510.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 192.168.10.0 0.0.0.255 area 0"
+      - "network 10.0.310.0 0.0.0.3 area 0"
+      - "network 10.0.510.0 0.0.0.3 area 0"
+      - "end"
+      - "write memory"
+
+verifications:
+  - source: "PC-HQ"
+    target_ip: "192.168.1.1"
+    ping_count: 4
+
+  - source: "PC-CABANG"
+    target_ip: "192.168.10.1"
+    ping_count: 4
+
+  - source: "PC-HQ"
+    target_ip: "192.168.10.10"
+    ping_count: 4

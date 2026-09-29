@@ -1,0 +1,480 @@
+name: "Universitas Negeri - Perancangan Integratif Enterprise Campus Network"
+description: "Arsitektur jaringan kampus universitas enterprise 4 gedung, 10 laboratorium, data center server akademik, Wi-Fi, dan redundansi high-availability."
+
+devices:
+  # Edge Routing to WAN / ISP
+  - id: "ROUTER-GATEWAY"
+    type: "router_2911"
+    position:
+      x: 0.50
+      y: 0.10
+
+  # High-Availability Dual Core L3 Switches
+  - id: "CORE-01"
+    type: "switch_3560"
+    position:
+      x: 0.35
+      y: 0.25
+
+  - id: "CORE-02"
+    type: "switch_3560"
+    position:
+      x: 0.65
+      y: 0.25
+
+  # Building Distribution & Access Layer
+  - id: "SW-GEDUNG-A"
+    type: "switch_2960"
+    position:
+      x: 0.18
+      y: 0.45
+
+  - id: "SW-GEDUNG-B"
+    type: "switch_2960"
+    position:
+      x: 0.38
+      y: 0.45
+
+  - id: "SW-GEDUNG-C"
+    type: "switch_2960"
+    position:
+      x: 0.62
+      y: 0.45
+
+  - id: "SW-GEDUNG-D"
+    type: "switch_2960"
+    position:
+      x: 0.82
+      y: 0.45
+
+  # Data Center Servers (VLAN 50)
+  - id: "SRV-AKADEMIK"
+    type: "server"
+    position:
+      x: 0.12
+      y: 0.72
+
+  - id: "SRV-WEB-DNS"
+    type: "server"
+    position:
+      x: 0.26
+      y: 0.72
+
+  - id: "SRV-DATABASE"
+    type: "server"
+    position:
+      x: 0.40
+      y: 0.72
+
+  # Campus Workstations & End Devices
+  - id: "PC-LAB-A1"
+    type: "pc"
+    position:
+      x: 0.56
+      y: 0.72
+
+  - id: "PC-DOSEN-B"
+    type: "pc"
+    position:
+      x: 0.70
+      y: 0.72
+
+  - id: "PC-LAB-C1"
+    type: "pc"
+    position:
+      x: 0.84
+      y: 0.72
+
+connections:
+  # Gateway to Core Switches (Point-to-Point Routed Uplinks)
+  - from: "ROUTER-GATEWAY"
+    to: "CORE-01"
+    cable_type: "copper_straight_through"
+    from_port: "GigabitEthernet0/0"
+    to_port: "GigabitEthernet0/1"
+
+  - from: "ROUTER-GATEWAY"
+    to: "CORE-02"
+    cable_type: "copper_straight_through"
+    from_port: "GigabitEthernet0/1"
+    to_port: "GigabitEthernet0/1"
+
+  # Inter-Core Trunk Link (High-Availability Backbone)
+  - from: "CORE-01"
+    to: "CORE-02"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/2"
+    to_port: "GigabitEthernet0/2"
+
+  # Core 01 to Building Switches (Trunks)
+  - from: "CORE-01"
+    to: "SW-GEDUNG-A"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/1"
+    to_port: "GigabitEthernet0/1"
+
+  - from: "CORE-01"
+    to: "SW-GEDUNG-B"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/2"
+    to_port: "GigabitEthernet0/1"
+
+  # Core 02 to Building Switches (Trunks)
+  - from: "CORE-02"
+    to: "SW-GEDUNG-C"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/1"
+    to_port: "GigabitEthernet0/1"
+
+  - from: "CORE-02"
+    to: "SW-GEDUNG-D"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/2"
+    to_port: "GigabitEthernet0/1"
+
+  # Core 01 to Data Center Server Farm (VLAN 50)
+  - from: "CORE-01"
+    to: "SRV-AKADEMIK"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/11"
+    to_port: "FastEthernet0"
+
+  - from: "CORE-01"
+    to: "SRV-WEB-DNS"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/12"
+    to_port: "FastEthernet0"
+
+  - from: "CORE-01"
+    to: "SRV-DATABASE"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/13"
+    to_port: "FastEthernet0"
+
+  # Building Switches to Workstations
+  - from: "SW-GEDUNG-A"
+    to: "PC-LAB-A1"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/1"
+    to_port: "FastEthernet0"
+
+  - from: "SW-GEDUNG-B"
+    to: "PC-DOSEN-B"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/1"
+    to_port: "FastEthernet0"
+
+  - from: "SW-GEDUNG-C"
+    to: "PC-LAB-C1"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/1"
+    to_port: "FastEthernet0"
+
+configurations:
+  ROUTER-GATEWAY:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname ROUTER-GATEWAY"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.10.1.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.10.1.5 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "ip route 10.10.0.0 255.255.0.0 10.10.1.2"
+      - "ip route 10.10.0.0 255.255.0.0 10.10.1.6 10"
+      - "end"
+      - "write memory"
+
+  CORE-01:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname CORE-01"
+      - "ip routing"
+      - "spanning-tree mode rapid-pvst"
+      - "spanning-tree vlan 1-99 root primary"
+      - "vlan 10"
+      - "name MANAGEMENT"
+      - "exit"
+      - "vlan 20"
+      - "name DOSEN-STAFF"
+      - "exit"
+      - "vlan 30"
+      - "name MAHASISWA-LAB"
+      - "exit"
+      - "vlan 40"
+      - "name WIFI-HOTSPOT"
+      - "exit"
+      - "vlan 50"
+      - "name DATA-CENTER"
+      - "exit"
+      - "vlan 99"
+      - "name NATIVE-BLACKHOLE"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "no switchport"
+      - "ip address 10.10.1.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "switchport trunk encapsulation dot1q"
+      - "switchport mode trunk"
+      - "switchport trunk native vlan 99"
+      - "no shutdown"
+      - "exit"
+      - "interface Vlan20"
+      - "ip address 10.10.20.1 255.255.254.0"
+      - "no shutdown"
+      - "exit"
+      - "interface Vlan30"
+      - "ip address 10.10.30.1 255.255.252.0"
+      - "no shutdown"
+      - "exit"
+      - "interface Vlan40"
+      - "ip address 10.10.40.1 255.255.252.0"
+      - "no shutdown"
+      - "exit"
+      - "interface Vlan50"
+      - "ip address 10.10.50.1 255.255.255.0"
+      - "no shutdown"
+      - "exit"
+      - "interface range FastEthernet0/1-2"
+      - "switchport trunk encapsulation dot1q"
+      - "switchport mode trunk"
+      - "switchport trunk native vlan 99"
+      - "no shutdown"
+      - "exit"
+      - "interface range FastEthernet0/11-13"
+      - "switchport mode access"
+      - "switchport access vlan 50"
+      - "spanning-tree portfast"
+      - "no shutdown"
+      - "exit"
+      - "ip route 0.0.0.0 0.0.0.0 10.10.1.1"
+      - "end"
+      - "write memory"
+
+  CORE-02:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname CORE-02"
+      - "ip routing"
+      - "spanning-tree mode rapid-pvst"
+      - "spanning-tree vlan 1-99 root secondary"
+      - "vlan 10"
+      - "name MANAGEMENT"
+      - "exit"
+      - "vlan 20"
+      - "name DOSEN-STAFF"
+      - "exit"
+      - "vlan 30"
+      - "name MAHASISWA-LAB"
+      - "exit"
+      - "vlan 40"
+      - "name WIFI-HOTSPOT"
+      - "exit"
+      - "vlan 50"
+      - "name DATA-CENTER"
+      - "exit"
+      - "vlan 99"
+      - "name NATIVE-BLACKHOLE"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "no switchport"
+      - "ip address 10.10.1.6 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "switchport trunk encapsulation dot1q"
+      - "switchport mode trunk"
+      - "switchport trunk native vlan 99"
+      - "no shutdown"
+      - "exit"
+      - "interface Vlan20"
+      - "ip address 10.10.20.2 255.255.254.0"
+      - "no shutdown"
+      - "exit"
+      - "interface Vlan30"
+      - "ip address 10.10.30.2 255.255.252.0"
+      - "no shutdown"
+      - "exit"
+      - "interface Vlan40"
+      - "ip address 10.10.40.2 255.255.252.0"
+      - "no shutdown"
+      - "exit"
+      - "interface Vlan50"
+      - "ip address 10.10.50.2 255.255.255.0"
+      - "no shutdown"
+      - "exit"
+      - "interface range FastEthernet0/1-2"
+      - "switchport trunk encapsulation dot1q"
+      - "switchport mode trunk"
+      - "switchport trunk native vlan 99"
+      - "no shutdown"
+      - "exit"
+      - "ip route 0.0.0.0 0.0.0.0 10.10.1.5"
+      - "end"
+      - "write memory"
+
+  SW-GEDUNG-A:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname SW-GEDUNG-A"
+      - "spanning-tree mode rapid-pvst"
+      - "vlan 30"
+      - "name MAHASISWA-LAB"
+      - "exit"
+      - "vlan 99"
+      - "name NATIVE-BLACKHOLE"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "switchport mode trunk"
+      - "switchport trunk native vlan 99"
+      - "no shutdown"
+      - "exit"
+      - "interface FastEthernet0/1"
+      - "switchport mode access"
+      - "switchport access vlan 30"
+      - "spanning-tree portfast"
+      - "spanning-tree bpduguard enable"
+      - "no shutdown"
+      - "end"
+      - "write memory"
+
+  SW-GEDUNG-B:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname SW-GEDUNG-B"
+      - "spanning-tree mode rapid-pvst"
+      - "vlan 20"
+      - "name DOSEN-STAFF"
+      - "exit"
+      - "vlan 99"
+      - "name NATIVE-BLACKHOLE"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "switchport mode trunk"
+      - "switchport trunk native vlan 99"
+      - "no shutdown"
+      - "exit"
+      - "interface FastEthernet0/1"
+      - "switchport mode access"
+      - "switchport access vlan 20"
+      - "spanning-tree portfast"
+      - "spanning-tree bpduguard enable"
+      - "no shutdown"
+      - "end"
+      - "write memory"
+
+  SW-GEDUNG-C:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname SW-GEDUNG-C"
+      - "spanning-tree mode rapid-pvst"
+      - "vlan 30"
+      - "name MAHASISWA-LAB"
+      - "exit"
+      - "vlan 99"
+      - "name NATIVE-BLACKHOLE"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "switchport mode trunk"
+      - "switchport trunk native vlan 99"
+      - "no shutdown"
+      - "exit"
+      - "interface FastEthernet0/1"
+      - "switchport mode access"
+      - "switchport access vlan 30"
+      - "spanning-tree portfast"
+      - "spanning-tree bpduguard enable"
+      - "no shutdown"
+      - "end"
+      - "write memory"
+
+  SW-GEDUNG-D:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname SW-GEDUNG-D"
+      - "spanning-tree mode rapid-pvst"
+      - "vlan 40"
+      - "name WIFI-HOTSPOT"
+      - "exit"
+      - "vlan 99"
+      - "name NATIVE-BLACKHOLE"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "switchport mode trunk"
+      - "switchport trunk native vlan 99"
+      - "no shutdown"
+      - "end"
+      - "write memory"
+
+  SRV-AKADEMIK:
+    type: "pc"
+    ip_address: "10.10.50.10"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "10.10.50.1"
+
+  SRV-WEB-DNS:
+    type: "pc"
+    ip_address: "10.10.50.20"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "10.10.50.1"
+
+  SRV-DATABASE:
+    type: "pc"
+    ip_address: "10.10.50.30"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "10.10.50.1"
+
+  PC-LAB-A1:
+    type: "pc"
+    ip_address: "10.10.30.10"
+    subnet_mask: "255.255.252.0"
+    default_gateway: "10.10.30.1"
+
+  PC-DOSEN-B:
+    type: "pc"
+    ip_address: "10.10.20.10"
+    subnet_mask: "255.255.254.0"
+    default_gateway: "10.10.20.1"
+
+  PC-LAB-C1:
+    type: "pc"
+    ip_address: "10.10.30.20"
+    subnet_mask: "255.255.252.0"
+    default_gateway: "10.10.30.1"
+
+verifications:
+  - source: "PC-LAB-A1"
+    target_ip: "10.10.50.10"
+    ping_count: 4
+
+  - source: "PC-DOSEN-B"
+    target_ip: "10.10.50.20"
+    ping_count: 4
+
+  - source: "PC-LAB-C1"
+    target_ip: "10.10.50.30"
+    ping_count: 4
+
+  - source: "SRV-AKADEMIK"
+    target_ip: "10.10.1.1"
+    ping_count: 4

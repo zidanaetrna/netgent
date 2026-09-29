@@ -1,0 +1,263 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CiscoPacketTracerAgentSkills",
+  "description": "Tool specifications for autonomous Cisco Packet Tracer UI automation.",
+  "tools": [
+    {
+      "name": "focus_and_maximize_cpt",
+      "description": "Locate, activate, and maximize the Cisco Packet Tracer application window.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds to search for window",
+            "default": 5.0
+          }
+        }
+      }
+    },
+    {
+      "name": "deploy_device",
+      "description": "Deploy a networking device (router, switch, PC) onto the Packet Tracer logical canvas.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "device_type": {
+            "type": "string",
+            "enum": ["router_2911", "router_1941", "router_pt", "switch_2960", "pc"],
+            "description": "Type of device to deploy"
+          },
+          "target_x": {
+            "type": "integer",
+            "description": "Target screen X coordinate on the canvas"
+          },
+          "target_y": {
+            "type": "integer",
+            "description": "Target screen Y coordinate on the canvas"
+          }
+        },
+        "required": ["device_type", "target_x", "target_y"]
+      }
+    },
+    {
+      "name": "connect_devices",
+      "description": "Connect two placed devices on the canvas using a network cable.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "device_1_coords": {
+            "type": "array",
+            "items": { "type": "integer" },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "[x, y] coordinates of the first device"
+          },
+          "device_2_coords": {
+            "type": "array",
+            "items": { "type": "integer" },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "[x, y] coordinates of the second device"
+          },
+          "cable_type": {
+            "type": "string",
+            "enum": [
+              "auto_connection",
+              "copper_straight_through",
+              "copper_cross_over",
+              "console",
+              "fiber",
+              "serial_dce",
+              "serial_dte"
+            ],
+            "default": "copper_straight_through",
+            "description": "Type of cable to use for connection"
+          },
+          "port_1": {
+            "description": "Port index (integer) or port name (string e.g. 'GigabitEthernet0/0') for device 1",
+            "oneOf": [
+              { "type": "integer" },
+              { "type": "string" }
+            ],
+            "default": 0
+          },
+          "port_2": {
+            "description": "Port index (integer) or port name (string e.g. 'GigabitEthernet0/0') for device 2",
+            "oneOf": [
+              { "type": "integer" },
+              { "type": "string" }
+            ],
+            "default": 0
+          }
+        },
+        "required": ["device_1_coords", "device_2_coords"]
+      }
+    },
+    {
+      "name": "delete_element",
+      "description": "Select the delete tool and remove the element at the specified canvas coordinates.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "target_x": {
+            "type": "integer",
+            "description": "X coordinate of the element to delete"
+          },
+          "target_y": {
+            "type": "integer",
+            "description": "Y coordinate of the element to delete"
+          }
+        },
+        "required": ["target_x", "target_y"]
+      }
+    },
+    {
+      "name": "open_cli_tab",
+      "description": "Open a device configuration window and activate its CLI console tab.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "device_x": {
+            "type": "integer",
+            "description": "Canvas X coordinate of the device"
+          },
+          "device_y": {
+            "type": "integer",
+            "description": "Canvas Y coordinate of the device"
+          }
+        },
+        "required": ["device_x", "device_y"]
+      }
+    },
+    {
+      "name": "execute_ios_commands",
+      "description": "Sequentially send and execute Cisco IOS CLI commands to the active terminal.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command_list": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "List of IOS commands to execute in sequence"
+          },
+          "dismiss_initial_dialog": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to automatically dismiss the initial configuration dialog prompt"
+          }
+        },
+        "required": ["command_list"]
+      }
+    },
+    {
+      "name": "configure_pc_ip",
+      "description": "Configure static IP address settings on a PC via its Desktop IP Configuration app.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "device_x": {
+            "type": "integer",
+            "description": "Canvas X coordinate of the PC"
+          },
+          "device_y": {
+            "type": "integer",
+            "description": "Canvas Y coordinate of the PC"
+          },
+          "ip_address": {
+            "type": "string",
+            "description": "IPv4 address to assign (e.g. '192.168.1.1')"
+          },
+          "subnet_mask": {
+            "type": "string",
+            "default": "255.255.255.0",
+            "description": "Subnet mask (default '255.255.255.0')"
+          },
+          "default_gateway": {
+            "type": "string",
+            "description": "Optional default gateway address"
+          }
+        },
+        "required": ["device_x", "device_y", "ip_address"]
+      }
+    },
+    {
+      "name": "run_pc_ping",
+      "description": "Open PC Command Prompt and execute a ping test against a target IP address.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "device_x": {
+            "type": "integer",
+            "description": "Canvas X coordinate of the source PC"
+          },
+          "device_y": {
+            "type": "integer",
+            "description": "Canvas Y coordinate of the source PC"
+          },
+          "target_ip": {
+            "type": "string",
+            "description": "Destination IP address to ping"
+          },
+          "ping_count": {
+            "type": "integer",
+            "default": 4,
+            "description": "Number of ICMP echo requests to send"
+          }
+        },
+        "required": ["device_x", "device_y", "target_ip"]
+      }
+    },
+    {
+      "name": "fast_forward_time",
+      "description": "Accelerate simulation time to immediately converge network protocols (STP green link lights).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "clicks": {
+            "type": "integer",
+            "default": 4,
+            "description": "Number of times to click fast forward"
+          }
+        }
+      }
+    },
+    {
+      "name": "read_cli_output",
+      "description": "Extract the current text buffer from the active Cisco CLI terminal.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "timeout": {
+            "type": "number",
+            "default": 1.0,
+            "description": "Maximum seconds to wait for clipboard response"
+          }
+        }
+      }
+    },
+    {
+      "name": "configure_vlan",
+      "description": "Generate and execute IOS commands to create a VLAN and optionally assign switch interfaces.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vlan_id": {
+            "type": "integer",
+            "description": "VLAN ID (1-4094)"
+          },
+          "vlan_name": {
+            "type": "string",
+            "description": "Name for the VLAN"
+          },
+          "interfaces": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "List of interface names to assign to this access VLAN"
+          }
+        },
+        "required": ["vlan_id", "vlan_name"]
+      }
+    }
+  ]
+}

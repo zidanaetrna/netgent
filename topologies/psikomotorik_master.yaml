@@ -1,0 +1,810 @@
+name: "Tugas Psikomotorik 3 - Master Showcase Topologi (Bus, Star, Ring, Mesh, Hybrid)"
+description: "Master topology canvas menampilkan kelima topologi psikomotorik (No 1 s/d 5) secara berdampingan dalam 5 zona terpisah, lengkap dengan label penanda nomor, konfigurasi IP, dan verifikasi konektivitas."
+
+devices:
+  # =========================================================================
+  # ZONA 1 (KIRI ATAS): NO 1 - TOPOLOGI BUS (5 PC + Backbone Rantai Hub)
+  # =========================================================================
+  - id: "NO1-BUS-HUB-SEG1"
+    type: "hub"
+    position:
+      x: 0.05
+      y: 0.16
+
+  - id: "NO1-BUS-HUB-SEG2"
+    type: "hub"
+    position:
+      x: 0.11
+      y: 0.16
+
+  - id: "NO1-BUS-HUB-SEG3-KRITIS"
+    type: "hub"
+    position:
+      x: 0.17
+      y: 0.16
+
+  - id: "NO1-BUS-HUB-SEG4"
+    type: "hub"
+    position:
+      x: 0.23
+      y: 0.16
+
+  - id: "NO1-BUS-HUB-SEG5"
+    type: "hub"
+    position:
+      x: 0.29
+      y: 0.16
+
+  - id: "NO1-BUS-PC1"
+    type: "pc"
+    position:
+      x: 0.05
+      y: 0.28
+
+  - id: "NO1-BUS-PC2"
+    type: "pc"
+    position:
+      x: 0.11
+      y: 0.28
+
+  - id: "NO1-BUS-PC3"
+    type: "pc"
+    position:
+      x: 0.17
+      y: 0.28
+
+  - id: "NO1-BUS-PC4"
+    type: "pc"
+    position:
+      x: 0.23
+      y: 0.28
+
+  - id: "NO1-BUS-PC5"
+    type: "pc"
+    position:
+      x: 0.29
+      y: 0.28
+
+  # =========================================================================
+  # ZONA 2 (KANAN ATAS): NO 2 - TOPOLOGI STAR (5 PC + Switch Sentral)
+  # =========================================================================
+  - id: "NO2-STAR-SW-PUSAT"
+    type: "switch_2960"
+    position:
+      x: 0.70
+      y: 0.18
+
+  - id: "NO2-STAR-PC1"
+    type: "pc"
+    position:
+      x: 0.70
+      y: 0.06
+
+  - id: "NO2-STAR-PC2"
+    type: "pc"
+    position:
+      x: 0.82
+      y: 0.12
+
+  - id: "NO2-STAR-PC3"
+    type: "pc"
+    position:
+      x: 0.80
+      y: 0.28
+
+  - id: "NO2-STAR-PC4"
+    type: "pc"
+    position:
+      x: 0.60
+      y: 0.28
+
+  - id: "NO2-STAR-PC5"
+    type: "pc"
+    position:
+      x: 0.58
+      y: 0.12
+
+  # =========================================================================
+  # ZONA 3 (KIRI BAWAH): NO 3 - TOPOLOGI RING (4 Node Switch Ring + 4 PC)
+  # =========================================================================
+  - id: "NO3-RING-SW1"
+    type: "switch_2960"
+    position:
+      x: 0.10
+      y: 0.55
+
+  - id: "NO3-RING-SW2"
+    type: "switch_2960"
+    position:
+      x: 0.24
+      y: 0.55
+
+  - id: "NO3-RING-SW3"
+    type: "switch_2960"
+    position:
+      x: 0.24
+      y: 0.75
+
+  - id: "NO3-RING-SW4"
+    type: "switch_2960"
+    position:
+      x: 0.10
+      y: 0.75
+
+  - id: "NO3-RING-PC1"
+    type: "pc"
+    position:
+      x: 0.04
+      y: 0.48
+
+  - id: "NO3-RING-PC2"
+    type: "pc"
+    position:
+      x: 0.30
+      y: 0.48
+
+  - id: "NO3-RING-PC3"
+    type: "pc"
+    position:
+      x: 0.30
+      y: 0.82
+
+  - id: "NO3-RING-PC4"
+    type: "pc"
+    position:
+      x: 0.04
+      y: 0.82
+
+  # =========================================================================
+  # ZONA 4 (TENGAH BAWAH): NO 4 - TOPOLOGI MESH (4 Router 2911 Full Mesh)
+  # =========================================================================
+  - id: "NO4-MESH-R1-HQ"
+    type: "router_2911"
+    position:
+      x: 0.42
+      y: 0.55
+
+  - id: "NO4-MESH-R2-EAST"
+    type: "router_2911"
+    position:
+      x: 0.56
+      y: 0.55
+
+  - id: "NO4-MESH-R3-DC"
+    type: "router_2911"
+    position:
+      x: 0.56
+      y: 0.75
+
+  - id: "NO4-MESH-R4-WEST"
+    type: "router_2911"
+    position:
+      x: 0.42
+      y: 0.75
+
+  # =========================================================================
+  # ZONA 5 (KANAN BAWAH): NO 5 - TOPOLOGI HYBRID ORGANISASI (Star LAN + Mesh WAN)
+  # =========================================================================
+  - id: "NO5-HYB-R-HQ"
+    type: "router_2911"
+    position:
+      x: 0.75
+      y: 0.55
+
+  - id: "NO5-HYB-R-BRANCH"
+    type: "router_2911"
+    position:
+      x: 0.90
+      y: 0.55
+
+  - id: "NO5-HYB-SW-HQ"
+    type: "switch_2960"
+    position:
+      x: 0.75
+      y: 0.72
+
+  - id: "NO5-HYB-SW-BR"
+    type: "switch_2960"
+    position:
+      x: 0.90
+      y: 0.72
+
+  - id: "NO5-HYB-PC-DIR"
+    type: "pc"
+    position:
+      x: 0.70
+      y: 0.85
+
+  - id: "NO5-HYB-SRV-ERP"
+    type: "server"
+    position:
+      x: 0.78
+      y: 0.85
+
+  - id: "NO5-HYB-PC-STF1"
+    type: "pc"
+    position:
+      x: 0.87
+      y: 0.85
+
+  - id: "NO5-HYB-PC-STF2"
+    type: "pc"
+    position:
+      x: 0.94
+      y: 0.85
+
+connections:
+  # =========================================================================
+  # CONNECTIONS: NO 1 - TOPOLOGI BUS
+  # =========================================================================
+  # Backbone Bus Inter-Hub Links (Horizontal Chain)
+  - from: "NO1-BUS-HUB-SEG1"
+    to: "NO1-BUS-HUB-SEG2"
+    cable_type: "copper_cross_over"
+    from_port: "FastEthernet1"
+    to_port: "FastEthernet0"
+
+  - from: "NO1-BUS-HUB-SEG2"
+    to: "NO1-BUS-HUB-SEG3-KRITIS"
+    cable_type: "copper_cross_over"
+    from_port: "FastEthernet2"
+    to_port: "FastEthernet0"
+
+  - from: "NO1-BUS-HUB-SEG3-KRITIS"
+    to: "NO1-BUS-HUB-SEG4"
+    cable_type: "copper_cross_over"
+    from_port: "FastEthernet2"
+    to_port: "FastEthernet0"
+
+  - from: "NO1-BUS-HUB-SEG4"
+    to: "NO1-BUS-HUB-SEG5"
+    cable_type: "copper_cross_over"
+    from_port: "FastEthernet2"
+    to_port: "FastEthernet0"
+
+  # Drop cables to PCs
+  - from: "NO1-BUS-PC1"
+    to: "NO1-BUS-HUB-SEG1"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet0"
+
+  - from: "NO1-BUS-PC2"
+    to: "NO1-BUS-HUB-SEG2"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet1"
+
+  - from: "NO1-BUS-PC3"
+    to: "NO1-BUS-HUB-SEG3-KRITIS"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet1"
+
+  - from: "NO1-BUS-PC4"
+    to: "NO1-BUS-HUB-SEG4"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet1"
+
+  - from: "NO1-BUS-PC5"
+    to: "NO1-BUS-HUB-SEG5"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet1"
+
+  # =========================================================================
+  # CONNECTIONS: NO 2 - TOPOLOGI STAR
+  # =========================================================================
+  - from: "NO2-STAR-PC1"
+    to: "NO2-STAR-SW-PUSAT"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet0/1"
+
+  - from: "NO2-STAR-PC2"
+    to: "NO2-STAR-SW-PUSAT"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet0/2"
+
+  - from: "NO2-STAR-PC3"
+    to: "NO2-STAR-SW-PUSAT"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet0/3"
+
+  - from: "NO2-STAR-PC4"
+    to: "NO2-STAR-SW-PUSAT"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet0/4"
+
+  - from: "NO2-STAR-PC5"
+    to: "NO2-STAR-SW-PUSAT"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet0/5"
+
+  # =========================================================================
+  # CONNECTIONS: NO 3 - TOPOLOGI RING
+  # =========================================================================
+  # Closed Loop Inter-Switch Ring Links
+  - from: "NO3-RING-SW1"
+    to: "NO3-RING-SW2"
+    cable_type: "copper_cross_over"
+    from_port: "FastEthernet0/23"
+    to_port: "FastEthernet0/23"
+
+  - from: "NO3-RING-SW2"
+    to: "NO3-RING-SW3"
+    cable_type: "copper_cross_over"
+    from_port: "FastEthernet0/24"
+    to_port: "FastEthernet0/23"
+
+  - from: "NO3-RING-SW3"
+    to: "NO3-RING-SW4"
+    cable_type: "copper_cross_over"
+    from_port: "FastEthernet0/24"
+    to_port: "FastEthernet0/23"
+
+  - from: "NO3-RING-SW4"
+    to: "NO3-RING-SW1"
+    cable_type: "copper_cross_over"
+    from_port: "FastEthernet0/24"
+    to_port: "FastEthernet0/24"
+
+  # Ring Node to PCs
+  - from: "NO3-RING-PC1"
+    to: "NO3-RING-SW1"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet0/1"
+
+  - from: "NO3-RING-PC2"
+    to: "NO3-RING-SW2"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet0/1"
+
+  - from: "NO3-RING-PC3"
+    to: "NO3-RING-SW3"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet0/1"
+
+  - from: "NO3-RING-PC4"
+    to: "NO3-RING-SW4"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0"
+    to_port: "FastEthernet0/1"
+
+  # =========================================================================
+  # CONNECTIONS: NO 4 - TOPOLOGI MESH (6 Links)
+  # =========================================================================
+  # R1 connections
+  - from: "NO4-MESH-R1-HQ"
+    to: "NO4-MESH-R2-EAST"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/0"
+    to_port: "GigabitEthernet0/0"
+
+  - from: "NO4-MESH-R1-HQ"
+    to: "NO4-MESH-R3-DC"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/1"
+    to_port: "GigabitEthernet0/0"
+
+  - from: "NO4-MESH-R1-HQ"
+    to: "NO4-MESH-R4-WEST"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/2"
+    to_port: "GigabitEthernet0/0"
+
+  # R2 connections
+  - from: "NO4-MESH-R2-EAST"
+    to: "NO4-MESH-R3-DC"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/1"
+    to_port: "GigabitEthernet0/1"
+
+  - from: "NO4-MESH-R2-EAST"
+    to: "NO4-MESH-R4-WEST"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/2"
+    to_port: "GigabitEthernet0/1"
+
+  # R3 to R4
+  - from: "NO4-MESH-R3-DC"
+    to: "NO4-MESH-R4-WEST"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/2"
+    to_port: "GigabitEthernet0/2"
+
+  # =========================================================================
+  # CONNECTIONS: NO 5 - TOPOLOGI HYBRID ORGANISASI
+  # =========================================================================
+  # WAN Link between HQ Router and Branch Router
+  - from: "NO5-HYB-R-HQ"
+    to: "NO5-HYB-R-BRANCH"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/2"
+    to_port: "GigabitEthernet0/2"
+
+  # HQ LAN Star Connections
+  - from: "NO5-HYB-R-HQ"
+    to: "NO5-HYB-SW-HQ"
+    cable_type: "copper_straight_through"
+    from_port: "GigabitEthernet0/0"
+    to_port: "GigabitEthernet0/1"
+
+  - from: "NO5-HYB-SW-HQ"
+    to: "NO5-HYB-PC-DIR"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/1"
+    to_port: "FastEthernet0"
+
+  - from: "NO5-HYB-SW-HQ"
+    to: "NO5-HYB-SRV-ERP"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/2"
+    to_port: "FastEthernet0"
+
+  # Branch LAN Star Connections
+  - from: "NO5-HYB-R-BRANCH"
+    to: "NO5-HYB-SW-BR"
+    cable_type: "copper_straight_through"
+    from_port: "GigabitEthernet0/0"
+    to_port: "GigabitEthernet0/1"
+
+  - from: "NO5-HYB-SW-BR"
+    to: "NO5-HYB-PC-STF1"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/1"
+    to_port: "FastEthernet0"
+
+  - from: "NO5-HYB-SW-BR"
+    to: "NO5-HYB-PC-STF2"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/2"
+    to_port: "FastEthernet0"
+
+configurations:
+  # =========================================================================
+  # CONFIGURATIONS: NO 1 - TOPOLOGI BUS (Subnet 192.168.10.0/24)
+  # =========================================================================
+  NO1-BUS-PC1:
+    type: "pc"
+    ip_address: "192.168.10.11"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+  NO1-BUS-PC2:
+    type: "pc"
+    ip_address: "192.168.10.12"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+  NO1-BUS-PC3:
+    type: "pc"
+    ip_address: "192.168.10.13"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+  NO1-BUS-PC4:
+    type: "pc"
+    ip_address: "192.168.10.14"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+  NO1-BUS-PC5:
+    type: "pc"
+    ip_address: "192.168.10.15"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+  # =========================================================================
+  # CONFIGURATIONS: NO 2 - TOPOLOGI STAR (Subnet 192.168.20.0/24)
+  # =========================================================================
+  NO2-STAR-SW-PUSAT:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname NO2-STAR-SW-PUSAT"
+      - "end"
+      - "write memory"
+
+  NO2-STAR-PC1:
+    type: "pc"
+    ip_address: "192.168.20.11"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.20.1"
+
+  NO2-STAR-PC2:
+    type: "pc"
+    ip_address: "192.168.20.12"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.20.1"
+
+  NO2-STAR-PC3:
+    type: "pc"
+    ip_address: "192.168.20.13"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.20.1"
+
+  NO2-STAR-PC4:
+    type: "pc"
+    ip_address: "192.168.20.14"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.20.1"
+
+  NO2-STAR-PC5:
+    type: "pc"
+    ip_address: "192.168.20.15"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.20.1"
+
+  # =========================================================================
+  # CONFIGURATIONS: NO 3 - TOPOLOGI RING (Subnet 192.168.30.0/24)
+  # =========================================================================
+  NO3-RING-SW1:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname NO3-RING-SW1"
+      - "end"
+
+  NO3-RING-SW2:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname NO3-RING-SW2"
+      - "end"
+
+  NO3-RING-SW3:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname NO3-RING-SW3"
+      - "end"
+
+  NO3-RING-SW4:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname NO3-RING-SW4"
+      - "end"
+
+  NO3-RING-PC1:
+    type: "pc"
+    ip_address: "192.168.30.11"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.30.1"
+
+  NO3-RING-PC2:
+    type: "pc"
+    ip_address: "192.168.30.12"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.30.1"
+
+  NO3-RING-PC3:
+    type: "pc"
+    ip_address: "192.168.30.13"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.30.1"
+
+  NO3-RING-PC4:
+    type: "pc"
+    ip_address: "192.168.30.14"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.30.1"
+
+  # =========================================================================
+  # CONFIGURATIONS: NO 4 - TOPOLOGI MESH 4 ROUTER (Point-to-Point /30 + OSPF)
+  # =========================================================================
+  NO4-MESH-R1-HQ:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname NO4-MESH-R1-HQ"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.4.12.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.4.13.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.4.14.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 10.4.0.0 0.0.255.255 area 0"
+      - "end"
+      - "write memory"
+
+  NO4-MESH-R2-EAST:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname NO4-MESH-R2-EAST"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.4.12.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.4.23.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.4.24.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 10.4.0.0 0.0.255.255 area 0"
+      - "end"
+      - "write memory"
+
+  NO4-MESH-R3-DC:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname NO4-MESH-R3-DC"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.4.13.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.4.23.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.4.34.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 10.4.0.0 0.0.255.255 area 0"
+      - "end"
+      - "write memory"
+
+  NO4-MESH-R4-WEST:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname NO4-MESH-R4-WEST"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.4.14.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "ip address 10.4.24.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.4.34.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 10.4.0.0 0.0.255.255 area 0"
+      - "end"
+      - "write memory"
+
+  # =========================================================================
+  # CONFIGURATIONS: NO 5 - TOPOLOGI HYBRID ORGANISASI
+  # =========================================================================
+  NO5-HYB-R-HQ:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname NO5-HYB-R-HQ"
+      - "interface GigabitEthernet0/0"
+      - "ip address 192.168.51.1 255.255.255.0"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.5.12.1 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 192.168.51.0 0.0.0.255 area 0"
+      - "network 10.5.12.0 0.0.0.3 area 0"
+      - "end"
+      - "write memory"
+
+  NO5-HYB-R-BRANCH:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname NO5-HYB-R-BRANCH"
+      - "interface GigabitEthernet0/0"
+      - "ip address 192.168.52.1 255.255.255.0"
+      - "no shutdown"
+      - "exit"
+      - "interface GigabitEthernet0/2"
+      - "ip address 10.5.12.2 255.255.255.252"
+      - "no shutdown"
+      - "exit"
+      - "router ospf 1"
+      - "network 192.168.52.0 0.0.0.255 area 0"
+      - "network 10.5.12.0 0.0.0.3 area 0"
+      - "end"
+      - "write memory"
+
+  NO5-HYB-SW-HQ:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname NO5-HYB-SW-HQ"
+      - "end"
+
+  NO5-HYB-SW-BR:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname NO5-HYB-SW-BR"
+      - "end"
+
+  NO5-HYB-PC-DIR:
+    type: "pc"
+    ip_address: "192.168.51.10"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.51.1"
+
+  NO5-HYB-SRV-ERP:
+    type: "server"
+    ip_address: "192.168.51.20"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.51.1"
+
+  NO5-HYB-PC-STF1:
+    type: "pc"
+    ip_address: "192.168.52.10"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.52.1"
+
+  NO5-HYB-PC-STF2:
+    type: "pc"
+    ip_address: "192.168.52.20"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.52.1"
+
+verifications:
+  # Uji Ujung-ke-Ujung No 1: Bus Ping PC1 ke PC5
+  - source: "NO1-BUS-PC1"
+    target_ip: "192.168.10.15"
+    ping_count: 4
+
+  # Uji Ujung-ke-Ujung No 2: Star Ping PC1 ke PC3
+  - source: "NO2-STAR-PC1"
+    target_ip: "192.168.20.13"
+    ping_count: 4
+
+  # Uji Ujung-ke-Ujung No 3: Ring Ping PC1 ke PC3
+  - source: "NO3-RING-PC1"
+    target_ip: "192.168.30.13"
+    ping_count: 4
+
+  # Uji Ujung-ke-Ujung No 5: Hybrid Ping PC Direksi HQ ke PC Staff Branch
+  - source: "NO5-HYB-PC-DIR"
+    target_ip: "192.168.52.10"
+    ping_count: 4

@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CiscoPacketTracerTopologyRecipe",
+  "description": "Declarative network topology definition for autonomous Cisco Packet Tracer deployment.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Descriptive name for the network topology"
+    },
+    "description": {
+      "type": "string",
+      "description": "Summary of the topology design and goals"
+    },
+    "devices": {
+      "type": "array",
+      "description": "List of network nodes to place on the canvas",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for this node (e.g. 'R1', 'SW1', 'PC1')"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["router_2911", "router_1941", "router_pt", "switch_2960", "pc"],
+            "description": "Hardware device model key"
+          },
+          "position": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.0,
+                "description": "Normalized canvas horizontal ratio (0.0=left, 1.0=right)"
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.0,
+                "description": "Normalized canvas vertical ratio (0.0=top, 1.0=bottom)"
+              }
+            },
+            "required": ["x", "y"]
+          }
+        },
+        "required": ["id", "type", "position"]
+      }
+    },
+    "connections": {
+      "type": "array",
+      "description": "List of physical links to connect between devices",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Device ID of the first node"
+          },
+          "to": {
+            "type": "string",
+            "description": "Device ID of the second node"
+          },
+          "cable_type": {
+            "type": "string",
+            "enum": [
+              "auto_connection",
+              "copper_straight_through",
+              "copper_cross_over",
+              "console",
+              "fiber",
+              "serial_dce",
+              "serial_dte"
+            ],
+            "default": "copper_straight_through",
+            "description": "Cable type"
+          },
+          "from_port": {
+            "description": "Port index or name on the first node",
+            "oneOf": [{ "type": "integer" }, { "type": "string" }],
+            "default": 0
+          },
+          "to_port": {
+            "description": "Port index or name on the second node",
+            "oneOf": [{ "type": "integer" }, { "type": "string" }],
+            "default": 0
+          }
+        },
+        "required": ["from", "to"]
+      }
+    },
+    "configurations": {
+      "type": "object",
+      "description": "Configuration directives mapped by device ID",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["ios", "pc"]
+          },
+          "commands": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "List of IOS commands (for routers/switches)"
+          },
+          "ip_address": {
+            "type": "string",
+            "description": "Static IP address (for PCs)"
+          },
+          "subnet_mask": {
+            "type": "string",
+            "default": "255.255.255.0",
+            "description": "Subnet mask (for PCs)"
+          },
+          "default_gateway": {
+            "type": "string",
+            "description": "Default gateway IP (for PCs)"
+          }
+        },
+        "required": ["type"]
+      }
+    },
+    "verifications": {
+      "type": "array",
+      "description": "List of connectivity tests to perform",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Device ID of the ping source (e.g. 'PC1')"
+          },
+          "target_ip": {
+            "type": "string",
+            "description": "Destination IP address to ping"
+          },
+          "ping_count": {
+            "type": "integer",
+            "default": 4
+          }
+        },
+        "required": ["source", "target_ip"]
+      }
+    }
+  },
+  "required": ["name", "devices"]
+}

@@ -1,0 +1,38 @@
+name: "PC Crossover Ping Test"
+description: "Direct connection between two PCs via crossover cable on subnet 192.168.1.0/24 with ping verification."
+
+devices:
+  - id: "PC1"
+    type: "pc"
+    position:
+      x: 0.35
+      y: 0.45
+
+  - id: "PC2"
+    type: "pc"
+    position:
+      x: 0.65
+      y: 0.45
+
+connections:
+  - from: "PC1"
+    to: "PC2"
+    cable_type: "copper_cross_over"
+    from_port: 0
+    to_port: 0
+
+configurations:
+  PC1:
+    type: "pc"
+    ip_address: "192.168.1.1"
+    subnet_mask: "255.255.255.0"
+
+  PC2:
+    type: "pc"
+    ip_address: "192.168.1.2"
+    subnet_mask: "255.255.255.0"
+
+verifications:
+  - source: "PC1"
+    target_ip: "192.168.1.2"
+    ping_count: 4

@@ -1,0 +1,17 @@
+# NetGent: Core Runtime Dependencies
+
+# Computer Vision & OS Automation
+pyautogui>=0.9.54
+opencv-python-headless>=4.8.0
+pillow>=10.0.0
+pygetwindow>=0.0.9
+numpy>=1.26.0
+
+# IPC Bridge & WebSockets
+python-socketio>=5.10.0
+aiohttp>=3.9.0
+requests>=2.31.0
+
+# Configuration & Rich Terminal UI
+pyyaml>=6.0.1
+rich>=13.7.0

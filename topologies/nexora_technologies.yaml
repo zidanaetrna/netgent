@@ -1,0 +1,340 @@
+name: "NEXORA Technologies - Enterprise 3-Tier Network Infrastructure"
+description: "Enterprise campus infrastructure for NEXORA Technologies featuring Edge Router, Layer-3 Core Switch with Inter-VLAN routing, Rapid-PVST+, 3 Access Switches (Floors 1-3), 4 Dedicated Servers, and VLAN segmentation."
+
+devices:
+  - id: "ROUTER-EDGE"
+    type: "router_2911"
+    position:
+      x: 0.50
+      y: 0.12
+
+  - id: "CORE-L3"
+    type: "switch_3560"
+    position:
+      x: 0.50
+      y: 0.28
+
+  - id: "SW-01"
+    type: "switch_2960"
+    position:
+      x: 0.22
+      y: 0.48
+
+  - id: "SW-02"
+    type: "switch_2960"
+    position:
+      x: 0.50
+      y: 0.48
+
+  - id: "SW-03"
+    type: "switch_2960"
+    position:
+      x: 0.78
+      y: 0.48
+
+  - id: "SERVER-01"
+    type: "server"
+    position:
+      x: 0.12
+      y: 0.76
+
+  - id: "SERVER-02"
+    type: "server"
+    position:
+      x: 0.28
+      y: 0.76
+
+  - id: "SERVER-03"
+    type: "server"
+    position:
+      x: 0.44
+      y: 0.76
+
+  - id: "SERVER-04"
+    type: "server"
+    position:
+      x: 0.60
+      y: 0.76
+
+  - id: "PC-FL1"
+    type: "pc"
+    position:
+      x: 0.76
+      y: 0.76
+
+  - id: "PC-DEV"
+    type: "pc"
+    position:
+      x: 0.90
+      y: 0.76
+
+connections:
+  # Edge Router to Core L3 Switch
+  - from: "ROUTER-EDGE"
+    to: "CORE-L3"
+    cable_type: "copper_straight_through"
+    from_port: "GigabitEthernet0/0"
+    to_port: "GigabitEthernet0/1"
+
+  # Core L3 Switch Trunks to Floor Access Switches
+  - from: "CORE-L3"
+    to: "SW-01"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/1"
+    to_port: "GigabitEthernet0/1"
+
+  - from: "CORE-L3"
+    to: "SW-02"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/2"
+    to_port: "GigabitEthernet0/1"
+
+  - from: "CORE-L3"
+    to: "SW-03"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/3"
+    to_port: "GigabitEthernet0/1"
+
+  # Core L3 Switch to Server Farm (VLAN 70)
+  - from: "CORE-L3"
+    to: "SERVER-01"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/11"
+    to_port: "FastEthernet0"
+
+  - from: "CORE-L3"
+    to: "SERVER-02"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/12"
+    to_port: "FastEthernet0"
+
+  - from: "CORE-L3"
+    to: "SERVER-03"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/13"
+    to_port: "FastEthernet0"
+
+  - from: "CORE-L3"
+    to: "SERVER-04"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/14"
+    to_port: "FastEthernet0"
+
+  # Access Switch SW-01 (Floor 1) to Employee PC (VLAN 20)
+  - from: "SW-01"
+    to: "PC-FL1"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/1"
+    to_port: "FastEthernet0"
+
+  # Access Switch SW-02 (Floor 2) to Developer PC (VLAN 30)
+  - from: "SW-02"
+    to: "PC-DEV"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/1"
+    to_port: "FastEthernet0"
+
+configurations:
+  ROUTER-EDGE:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname ROUTER-EDGE"
+      - "interface GigabitEthernet0/0"
+      - "ip address 10.10.10.2 255.255.255.0"
+      - "no shutdown"
+      - "exit"
+      - "ip route 10.10.0.0 255.255.0.0 10.10.10.1"
+      - "end"
+      - "write memory"
+
+  CORE-L3:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname CORE-L3"
+      - "ip routing"
+      - "spanning-tree mode rapid-pvst"
+      - "spanning-tree vlan 1-99 root primary"
+      - "vlan 10"
+      - "name MANAGEMENT"
+      - "exit"
+      - "vlan 20"
+      - "name EMPLOYEES"
+      - "exit"
+      - "vlan 30"
+      - "name DEVELOPERS"
+      - "exit"
+      - "vlan 40"
+      - "name GUEST"
+      - "exit"
+      - "vlan 50"
+      - "name VOICE"
+      - "exit"
+      - "vlan 60"
+      - "name CCTV"
+      - "exit"
+      - "vlan 70"
+      - "name SERVERS"
+      - "exit"
+      - "vlan 80"
+      - "name PRINTERS"
+      - "exit"
+      - "vlan 99"
+      - "name NATIVE-BLACKHOLE"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "no switchport"
+      - "ip address 10.10.10.1 255.255.255.0"
+      - "no shutdown"
+      - "exit"
+      - "ip route 0.0.0.0 0.0.0.0 10.10.10.2"
+      - "interface Vlan20"
+      - "ip address 10.10.20.1 255.255.254.0"
+      - "no shutdown"
+      - "interface Vlan30"
+      - "ip address 10.10.30.1 255.255.255.0"
+      - "no shutdown"
+      - "interface Vlan40"
+      - "ip address 10.10.40.1 255.255.254.0"
+      - "no shutdown"
+      - "interface Vlan70"
+      - "ip address 10.10.70.1 255.255.255.0"
+      - "no shutdown"
+      - "interface range FastEthernet0/1-3"
+      - "switchport trunk encapsulation dot1q"
+      - "switchport mode trunk"
+      - "switchport trunk native vlan 99"
+      - "no shutdown"
+      - "interface range FastEthernet0/11-14"
+      - "switchport mode access"
+      - "switchport access vlan 70"
+      - "spanning-tree portfast"
+      - "no shutdown"
+      - "end"
+      - "write memory"
+
+  SW-01:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname SW-01"
+      - "spanning-tree mode rapid-pvst"
+      - "vlan 20"
+      - "name EMPLOYEES"
+      - "exit"
+      - "vlan 99"
+      - "name NATIVE-BLACKHOLE"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "switchport mode trunk"
+      - "switchport trunk native vlan 99"
+      - "no shutdown"
+      - "interface FastEthernet0/1"
+      - "switchport mode access"
+      - "switchport access vlan 20"
+      - "spanning-tree portfast"
+      - "spanning-tree bpduguard enable"
+      - "no shutdown"
+      - "end"
+      - "write memory"
+
+  SW-02:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname SW-02"
+      - "spanning-tree mode rapid-pvst"
+      - "vlan 30"
+      - "name DEVELOPERS"
+      - "exit"
+      - "vlan 99"
+      - "name NATIVE-BLACKHOLE"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "switchport mode trunk"
+      - "switchport trunk native vlan 99"
+      - "no shutdown"
+      - "interface FastEthernet0/1"
+      - "switchport mode access"
+      - "switchport access vlan 30"
+      - "spanning-tree portfast"
+      - "spanning-tree bpduguard enable"
+      - "no shutdown"
+      - "end"
+      - "write memory"
+
+  SW-03:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname SW-03"
+      - "spanning-tree mode rapid-pvst"
+      - "vlan 99"
+      - "name NATIVE-BLACKHOLE"
+      - "exit"
+      - "interface GigabitEthernet0/1"
+      - "switchport mode trunk"
+      - "switchport trunk native vlan 99"
+      - "no shutdown"
+      - "end"
+      - "write memory"
+
+  SERVER-01:
+    type: "pc"
+    ip_address: "10.10.70.10"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "10.10.70.1"
+
+  SERVER-02:
+    type: "pc"
+    ip_address: "10.10.70.20"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "10.10.70.1"
+
+  SERVER-03:
+    type: "pc"
+    ip_address: "10.10.70.30"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "10.10.70.1"
+
+  SERVER-04:
+    type: "pc"
+    ip_address: "10.10.70.40"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "10.10.70.1"
+
+  PC-FL1:
+    type: "pc"
+    ip_address: "10.10.20.10"
+    subnet_mask: "255.255.254.0"
+    default_gateway: "10.10.20.1"
+
+  PC-DEV:
+    type: "pc"
+    ip_address: "10.10.30.10"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "10.10.30.1"
+
+verifications:
+  - source: "PC-FL1"
+    target_ip: "10.10.70.10"
+    ping_count: 4
+
+  - source: "PC-DEV"
+    target_ip: "10.10.70.20"
+    ping_count: 4
+
+  - source: "PC-FL1"
+    target_ip: "10.10.70.40"
+    ping_count: 4
+
+  - source: "SERVER-03"
+    target_ip: "10.10.10.2"
+    ping_count: 4

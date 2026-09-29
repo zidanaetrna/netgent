@@ -1,0 +1,212 @@
+name: "Informatics Computer Laboratory Network"
+description: "Core Router Gateway, 2 Access Switches, Central Server, 2 Network Printers, and Workstations."
+
+devices:
+  - id: "R1"
+    type: "router_2911"
+    position:
+      x: 0.50
+      y: 0.15
+
+  - id: "SW1"
+    type: "switch_2960"
+    position:
+      x: 0.35
+      y: 0.38
+
+  - id: "SW2"
+    type: "switch_2960"
+    position:
+      x: 0.65
+      y: 0.38
+
+  - id: "SERVER"
+    type: "server"
+    position:
+      x: 0.15
+      y: 0.38
+
+  - id: "PRINTER1"
+    type: "printer"
+    position:
+      x: 0.15
+      y: 0.65
+
+  - id: "PRINTER2"
+    type: "printer"
+    position:
+      x: 0.85
+      y: 0.65
+
+  - id: "PC1"
+    type: "pc"
+    position:
+      x: 0.30
+      y: 0.70
+
+  - id: "PC2"
+    type: "pc"
+    position:
+      x: 0.42
+      y: 0.70
+
+  - id: "PC3"
+    type: "pc"
+    position:
+      x: 0.58
+      y: 0.70
+
+  - id: "PC4"
+    type: "pc"
+    position:
+      x: 0.70
+      y: 0.70
+
+connections:
+  # Uplink Router R1 -> Switch 1
+  - from: "R1"
+    to: "SW1"
+    cable_type: "copper_straight_through"
+    from_port: "GigabitEthernet0/0"
+    to_port: "GigabitEthernet0/1"
+
+  # Inter-Switch Trunk SW1 -> SW2
+  - from: "SW1"
+    to: "SW2"
+    cable_type: "copper_cross_over"
+    from_port: "GigabitEthernet0/2"
+    to_port: "GigabitEthernet0/2"
+
+  # Switch 1 Endpoints
+  - from: "SW1"
+    to: "SERVER"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/1"
+    to_port: "FastEthernet0"
+
+  - from: "SW1"
+    to: "PRINTER1"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/2"
+    to_port: "FastEthernet0"
+
+  - from: "SW1"
+    to: "PC1"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/3"
+    to_port: "FastEthernet0"
+
+  - from: "SW1"
+    to: "PC2"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/4"
+    to_port: "FastEthernet0"
+
+  # Switch 2 Endpoints
+  - from: "SW2"
+    to: "PRINTER2"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/1"
+    to_port: "FastEthernet0"
+
+  - from: "SW2"
+    to: "PC3"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/2"
+    to_port: "FastEthernet0"
+
+  - from: "SW2"
+    to: "PC4"
+    cable_type: "copper_straight_through"
+    from_port: "FastEthernet0/3"
+    to_port: "FastEthernet0"
+
+configurations:
+  R1:
+    type: "ios"
+    commands:
+      - "no"
+      - "enable"
+      - "configure terminal"
+      - "hostname Router-Lab"
+      - "interface GigabitEthernet0/0"
+      - "ip address 192.168.10.1 255.255.255.0"
+      - "no shutdown"
+      - "exit"
+      - "ip dhcp pool LAB_POOL"
+      - "network 192.168.10.0 255.255.255.0"
+      - "default-router 192.168.10.1"
+      - "dns-server 192.168.10.2"
+      - "end"
+      - "write memory"
+
+  SW1:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname Switch-1"
+      - "end"
+
+  SW2:
+    type: "ios"
+    commands:
+      - "enable"
+      - "configure terminal"
+      - "hostname Switch-2"
+      - "end"
+
+  SERVER:
+    type: "pc"
+    ip_address: "192.168.10.2"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+  PRINTER1:
+    type: "pc"
+    ip_address: "192.168.10.5"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+  PRINTER2:
+    type: "pc"
+    ip_address: "192.168.10.6"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+  PC1:
+    type: "pc"
+    ip_address: "192.168.10.11"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+  PC2:
+    type: "pc"
+    ip_address: "192.168.10.12"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+  PC3:
+    type: "pc"
+    ip_address: "192.168.10.13"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+  PC4:
+    type: "pc"
+    ip_address: "192.168.10.14"
+    subnet_mask: "255.255.255.0"
+    default_gateway: "192.168.10.1"
+
+verifications:
+  - source: "PC1"
+    target_ip: "192.168.10.1"
+    ping_count: 4
+
+  - source: "PC1"
+    target_ip: "192.168.10.2"
+    ping_count: 4
+
+  - source: "PC3"
+    target_ip: "192.168.10.6"
+    ping_count: 4
