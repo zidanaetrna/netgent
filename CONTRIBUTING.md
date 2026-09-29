@@ -24,7 +24,7 @@ Whether you're fixing a typo, adding a new router chassis model, or making the C
 4. **Respect the Mouse**:
    - The primary philosophy of NetGent's IPC engine is **zero mouse hijacking**. If an action can be performed via the Socket.IO programmatic bridge, do NOT use `pyautogui` clicks. Users want to keep browsing memes while their network deploys.
 5. **Keep Tests Green**:
-   - We currently have **80 tests** with a 100% pass rate. If your PR breaks 14 tests, don't just delete the tests and pretend nothing happened. Fix the code.
+   - We maintain a comprehensive test suite with a 100% pass rate. If your PR breaks tests, don't just delete them and pretend nothing happened. Fix the code.
 
 ---
 
@@ -55,7 +55,7 @@ Whether you're fixing a typo, adding a new router chassis model, or making the C
    ```bash
    python -m unittest discover tests
    ```
-   If it says `Ran 80 tests in XX.XXs - OK`, you're golden.
+   If it says `Ran XX tests in XX.XXs - OK`, you're golden.
 
 ---
 

@@ -7,8 +7,9 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg" alt="Python Version"></a>
-  <a href="tests/"><img src="https://img.shields.io/badge/Tests-80%20Passed%20(Zero%20Flakes)-success.svg" alt="Tests Status"></a>
+  <a href="tests/"><img src="https://img.shields.io/badge/Tests-Passing%20(100%25%20Green)-success.svg" alt="Tests Status"></a>
   <a href="https://github.com/zidanaetrna/netgent"><img src="https://img.shields.io/badge/Vibe-Claude%20Code%20x%20Antigravity-purple.svg" alt="Agent Vibe"></a>
+  <a href="https://github.com/zidanaetrna/netgent"><img src="https://img.shields.io/badge/Engine-Pure%20IPC%20Socket-orange.svg" alt="Pure IPC Socket"></a>
   <a href="https://github.com/zidanaetrna/netgent"><img src="https://img.shields.io/badge/Dragging%20Cables%20Manually-0%25-red.svg" alt="No Manual Dragging"></a>
 </p>
 
@@ -26,19 +27,20 @@ Have you ever had a professor or lab instructor demand a **10-Router Full Mesh t
 
 **NetGent solves this.**
 
-NetGent is an autonomous AI network engineering agent that takes declarative YAML recipes and talks directly to Cisco Packet Tracer. It drops routers, switches, and PCs onto the canvas, wires them up, types the IOS commands, kicks Spanning Tree to fast-forward time, and verifies ping reachability—**all while you sit back, sip iced coffee, and look like a high-tech sorcerer.**
+NetGent is an autonomous AI network engineering agent that takes declarative YAML recipes and talks directly to Cisco Packet Tracer via an Inter-Process Communication (IPC) Socket bridge. It drops routers, switches, and PCs onto the canvas, wires them up, applies full IOS configs, fast-forwards Spanning Tree Protocol convergence, and verifies end-to-end ping reachability—**all while you sit back, sip iced coffee, and look like a high-tech wizard.**
 
 ---
 
 ## Philosophy & Code Standards
 
 > *"Look, we're not building software for a Swiss central bank or landing autonomous rovers on Mars. But let's not write absolute shit code either."*  
-> — **zidanaetrna**
+> — **[zidanaetrna](https://github.com/zidanaetrna)**
 
 We believe in three simple truths:
-1. **Clean Code Still Matters**: Functions have one job, variable names explain themselves, and we don't commit spaghetti monsters into `git`.
-2. **Zero Mouse Hijacking**: We communicate with Packet Tracer via a pure WebSockets / Socket.IO IPC bridge. We don't hijack your mouse cursor like a rogue malware from 2004. Your mouse stays yours so you can scroll Twitter or shitpost while your network builds itself.
-3. **No Bullshit Automation**: When NetGent says a ping succeeded, it verified the ICMP PDU response from the simulation engine. No fake green checkmarks.
+1. **Clean Modular Architecture**: Clean code over clever code. 4 distinct layers (`core`, `automation`, `ui`, `ai`), single-responsibility functions, and descriptive names.
+2. **Zero Mouse Hijacking**: We communicate with Packet Tracer via a pure WebSockets / Socket.IO IPC bridge (`127.0.0.1:7531`). We don't hijack your mouse cursor like a rogue malware from 2004. Your cursor stays yours so you can scroll Twitter or shitpost while your network builds itself.
+3. **Headless & Asset-Free**: No brittle OpenCV pixel template matching. No screen resolution scaling issues. Zero GBs of loose PNG crops. Direct, deterministic JSON-RPC IPC calls to Packet Tracer's internal engine.
+4. **No Bullshit Verification**: When NetGent says a ping succeeded, it verified the actual ICMP PDU response from the simulation engine. No fake green checkmarks.
 
 ---
 
@@ -53,28 +55,27 @@ We believe in three simple truths:
                                     ▼
         ┌────────────────────────────────────────────────────────┐
         │             NetGent Core Orchestrator                  │
-        │           (src/recipe_runner.py & CLI)                 │
+        │             (src/core/recipe_runner.py)                │
         └───────────────────────────┬────────────────────────────┘
                                     │
-                    ┌───────────────┴───────────────┐
-                    ▼                               ▼
-       [Primary: IPC Socket.IO]          [Fallback: OpenCV Vision]
-       Talks JSON-RPC to PT JS Engine    Multi-scale template matching
-       (Speed: Instant, 0 mouse moves)   (When IPC extension isn't loaded)
-                    │                               │
-                    └───────────────┬───────────────┘
+                                    ▼
+        ┌────────────────────────────────────────────────────────┐
+        │            Deterministic IPC Socket Bridge             │
+        │            (src/automation/ipc_bridge.py)              │
+        │            Port 7531 (JSON-RPC over Socket.IO)         │
+        └───────────────────────────┬────────────────────────────┘
                                     │
                                     ▼
-       ┌─────────────────────────────────────────────────────────┐
-       │               Cisco Packet Tracer Canvas                │
-       │                                                         │
-       │   [R1] ══════════════ [R2]      - Chassis Deployed      │
-       │     ║ ╲             ╱  ║        - Interfaces Wired      │
-       │     ║   ╲         ╱    ║        - IOS Config Applied    │
-       │     ║     ╲     ╱      ║        - OSPF / VLAN Converged │
-       │     ║       ╲ ╱        ║        - PDU Verified (PASS)   │
-       │   [R4] ══════════════ [R3]                              │
-       └─────────────────────────────────────────────────────────┘
+        ┌─────────────────────────────────────────────────────────┐
+        │               Cisco Packet Tracer Canvas                │
+        │                                                         │
+        │   [R1] ══════════════ [R2]      - Chassis Deployed      │
+        │     ║ ╲             ╱  ║        - Interfaces Wired      │
+        │     ║   ╲         ╱    ║        - IOS Config Applied    │
+        │     ║     ╲     ╱      ║        - OSPF / VLAN Converged │
+        │     ║       ╲ ╱        ║        - PDU Verified (PASS)   │
+        │   [R4] ══════════════ [R3]                              │
+        └─────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -83,9 +84,10 @@ We believe in three simple truths:
 
 - **Claude Code-Inspired Terminal UI**:
   A gorgeous interactive CLI built with `rich`. Live status spinners, syntax panels, preset selection, and smart clipboard pasting (it literally detects when you copied a networking assignment from your browser).
-- **Dual Execution Engines**:
-  - **IPC Engine (`--engine ipc`)**: Speaks directly to Packet Tracer's internal JavaScript engine. Sub-second deployments with zero screen clicks.
-  - **Vision Engine (`--engine gui`)**: OpenCV template matching fallback that can find buttons and ports visually if you don't have the IPC plugin installed.
+- **Antigravity Interactive Mode**:
+  Built-in guidance for pairing with **Google Antigravity** or Claude Code. Generate your YAML topology recipes, hit `[U]` / `[R]` in the live catalog refresh scanner, and watch your freshly generated topology execute immediately.
+- **Pure IPC Engine (`127.0.0.1:7531`)**:
+  Speaks directly to Packet Tracer's internal JavaScript engine via `extensions/cisco-pt-mcp.pts`. Sub-second deployments, zero mouse cursor locks, and zero fragile image template matches.
 - **Enterprise-Grade Pre-Built Topologies**:
   - **Tugas Psikomotorik 3 Master**: 5 topologies in 1 single canvas (Bus, Star, Ring, Mesh, Hybrid) cleanly separated into distinct zones with numbered labels (`NO1-`, `NO2-`, etc.) so you know exactly what to screenshot for your lecturer.
   - **10-Router OSPF Partial Mesh**: A 14-link high-availability WAN backbone demonstrating why Full Mesh is expensive and Partial Mesh is smart.
@@ -93,7 +95,7 @@ We believe in three simple truths:
   - **NEXORA Technologies**: 3-tier enterprise campus with 9 VLANs and server clustering.
   - **Classic CCNA Labs**: Praktikum 2 (LAN Switch), Praktikum 3 (Two Networks Router), Simulasi 2 (Lab Informatika).
 - **Automated Time-Travel**:
-  Automatically triggers fast-forward simulation pulses (`Alt+D`) so you don't have to sit there staring at Spanning Tree's orange port dots while waiting 50 seconds for listening/learning states.
+  Automatically fast-forwards simulation pulses (`Alt+D`) so you don't have to sit there staring at Spanning Tree's orange port dots while waiting 50 seconds for listening/learning states.
 
 ---
 
@@ -101,8 +103,8 @@ We believe in three simple truths:
 
 ### Prerequisites
 - **OS**: Windows 10 or 11 (64-bit)
-- **Python**: 3.10, 3.11, or 3.12
-- **Cisco Packet Tracer**: Version 8.0, 8.1, or 8.2+
+- **Python**: 3.10, 3.11, 3.12, or 3.13
+- **Cisco Packet Tracer**: Version 8.0, 8.1, 8.2, or 8.3+
 
 ### 1. Clone & Setup Virtualenv
 ```bash
@@ -119,16 +121,17 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-### 3. Connect Packet Tracer IPC Bridge
+### 3. Load Cisco Packet Tracer IPC Extension
 1. Open **Cisco Packet Tracer**.
 2. Navigate to **Extensions** -> **Scripting** -> **Script Manager**.
-3. Load `extensions/pt_ipc_bridge.js` (or run NetGent and let it communicate on port `7531`).
+3. Add and run `extensions/cisco-pt-mcp.pts` (or `extensions/Builder.pts`).
+4. NetGent will automatically connect to `127.0.0.1:7531`.
 
 ---
 
 ## Usage
 
-### 1. The "I Just Want To Talk To It" Mode (Interactive CLI)
+### 1. Interactive Agent Mode (Recommended)
 Just run `python src/main.py` without arguments:
 ```bash
 python src/main.py
@@ -143,30 +146,34 @@ You will be greeted by the interactive agent terminal:
 │                                                                          │
 ╰──────────────────────────────────────────────────────────────────────────╯
 ```
-Choose a preset (1 through 7) or press `C` to smart-paste a custom assignment from your clipboard!
+- Select `[1-7]` to run built-in lab presets.
+- Select `[A]` to launch **Antigravity Mode** with live catalog file watching.
+- Select `[C]` to smart-paste an assignment from your clipboard.
+- Select `[D]` to run non-destructive dry-runs.
+- Press `[U]` or `[R]` anywhere in the recipe catalog to refresh newly added YAML files.
 
 ### 2. Direct Recipe Execution (Speedrun Mode)
 Deploy pre-built declarative topologies directly to Packet Tracer:
 
 ```bash
 # Deploy all 5 psychomotor topologies (Bus, Star, Ring, Mesh, Hybrid) at once:
-python src/main.py --recipe topologies/psikomotorik_master.yaml --engine ipc
+python src/main.py --recipe topologies/psikomotorik_master.yaml
 
 # Deploy 10-Router OSPF Partial Mesh:
-python src/main.py --recipe topologies/partial_mesh_10routers.yaml --engine ipc
+python src/main.py --recipe topologies/partial_mesh_10routers.yaml
 
 # Deploy Campus Enterprise Network:
-python src/main.py --recipe topologies/universitas_integratif.yaml --engine ipc
+python src/main.py --recipe topologies/universitas_integratif.yaml
 ```
 
-### 3. "Check My Work First" (Dry Run Mode)
-Want to verify that your recipe coordinates and port names aren't hallucinated before touching Packet Tracer?
+### 3. Dry-Run Mode ("Check My Math First")
+Want to verify that your recipe coordinates, subnets, and port names aren't hallucinated before touching Packet Tracer?
 ```bash
 python src/main.py --recipe topologies/psikomotorik_master.yaml --dry-run
 ```
 
-### 4. Diagnostics & Sanity Check
-Test screen resolution, template matching confidence, and Packet Tracer window detection:
+### 4. Diagnostics & Pre-flight Sanity Check
+Verify Python dependencies, CPT process detection, IPC socket connectivity, and schema integrity:
 ```bash
 python src/main.py --preflight
 ```
@@ -238,41 +245,39 @@ verifications:
 
 ```text
 netgent/
-├── assets/                 # Reference images and CV templates
-├── docs/                   # Additional documentation and guides
-├── extensions/             # Cisco Packet Tracer JS IPC extensions
+├── extensions/             # Cisco Packet Tracer PTS IPC extensions (cisco-pt-mcp.pts, Builder.pts)
 ├── projects/               # Generated lab proof reports and evidence
 ├── schemas/                # JSON schemas for recipes and skills
-├── src/                    # Core NetGent modular source code
+├── src/                    # Clean 4-layer modular architecture
 │   ├── ai/                 # LLM client & Model Context Protocol (MCP) server
 │   │   ├── llm_client.py
 │   │   └── mcp_server.py
-│   ├── automation/         # Low-level Packet Tracer IPC & vision drivers
+│   ├── automation/         # Packet Tracer IPC socket client & automation drivers
 │   │   ├── ipc_bridge.py
 │   │   ├── window_manager.py
 │   │   ├── topology_builder.py
 │   │   ├── cli_manager.py
 │   │   ├── pc_manager.py
 │   │   ├── simulation_manager.py
-│   │   ├── calibrate_assets.py
 │   │   └── preflight_check.py
 │   ├── core/               # Configuration, models, and recipe orchestration
 │   │   ├── config.py
+│   │   ├── presets.py
 │   │   ├── primitives.py
 │   │   ├── recipe_runner.py
 │   │   ├── proof_collector.py
 │   │   └── topology_generator.py
-│   ├── ui/                 # Interactive Claude Code-style CLI & desktop GUI
-│   │   ├── agent_cli.py
-│   │   ├── agent_gui.py
-│   │   └── web_server.py
+│   ├── ui/                 # Interactive Claude Code / Antigravity terminal CLI
+│   │   └── agent_cli.py
 │   ├── __init__.py
 │   └── main.py             # Unified CLI entry point
-├── tests/                  # Comprehensive unittest suite (80 passed)
+├── tests/                  # Comprehensive unittest suite (100% passing)
 ├── topologies/             # Ready-to-run declarative YAML topologies
 ├── requirements.txt        # Runtime dependencies
-├── pyproject.toml          # PEP 517 package configuration
+├── pyproject.toml          # PEP 517 package configuration & pyright setup
+├── pyrightconfig.json      # IDE language server configuration
 ├── LICENSE                 # MIT License (zidanaetrna)
+├── CONTRIBUTING.md         # Developer contribution guidelines
 └── README.md               # Project documentation
 ```
 
@@ -280,7 +285,7 @@ netgent/
 
 ## Testing
 
-NetGent comes with **80 unit tests** covering coordinate mappers, recipe validators, IPC event loops, simulation timers, and CLI managers:
+NetGent comes with an extensive unit test suite covering coordinate mappers, recipe validators, IPC event loops, simulation timers, and CLI managers:
 
 ```bash
 python -m unittest discover tests
@@ -288,7 +293,7 @@ python -m unittest discover tests
 
 Output:
 ```text
-Ran 80 tests in 28.626s
+Ran 68 tests in 20.151s
 
 OK
 ```
